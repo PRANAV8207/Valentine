@@ -1,62 +1,176 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Will You Be My Valentine?</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background-color: #ffccd5;
-            margin-top: 100px;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Goaduu 💖</title>
 
-        h1 {
-            font-size: 40px;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    overflow: hidden;
+    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #ffdde1);
+    background-size: 400% 400%;
+    animation: gradient 10s ease infinite;
+    color: #fff;
+}
 
-        .btn {
-            font-size: 20px;
-            padding: 10px 20px;
-            margin: 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-        }
+@keyframes gradient {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
 
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-        }
+h1 {
+    margin-top: 30px;
+    font-size: 32px;
+}
 
-        #noBtn {
-            background-color: #6c757d;
-            color: white;
-            position: absolute;
-        }
-    </style>
+.photo-container img {
+    width: 200px;
+    height: auto;
+    margin: 10px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.6);
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    margin: 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+    position: relative;
+}
+
+#noBtn {
+    background-color: #6c757d;
+    color: white;
+    position: relative;
+}
+
+.heart {
+    position: absolute;
+    color: pink;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    from { transform: translateY(100vh); }
+    to { transform: translateY(-10vh); }
+}
+</style>
 </head>
+
 <body>
 
-<h1>Will You Be My Valentine? 💖</h1>
+<h1>Goaduu 💗</h1>
+<h2>Will You Be My Valentine? 💖</h2>
 
-<button id="yesBtn" class="btn">Yes 💘</button>
-<button id="noBtn" class="btn">No 😢</button>
+<div class="photo-container">
+    <img src="Pranav1.png">
+    <img src="Pranav2.png">
+    <img src="Pranav3.png">
+</div>
+
+<button id="yesBtn">YES 💘</button>
+<button id="noBtn">NO 🙄</button>
+
+<!-- YouTube Instrumental Embed -->
+<iframe width="0" height="0" 
+src="https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1&loop=1&playlist=2Vv-BfVoq4g"
+frameborder="0"
+allow="autoplay">
+</iframe>
 
 <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
 
-    noBtn.addEventListener("mouseover", function() {
-        const randomX = Math.floor(Math.random() * 300);
-        const randomY = Math.floor(Math.random() * 300);
-        noBtn.style.left = randomX + "px";
-        noBtn.style.top = randomY + "px";
-    });
+let noClickCount = 0;
 
-    yesBtn.addEventListener("click", function() {
-        document.body.innerHTML = "<h1>Yayyyy 💕 I knew it 😍</h1>";
-    });
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+
+function moveButton(btn){
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
+    btn.style.position = "absolute";
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+}
+
+// YES runs away initially
+yesBtn.addEventListener("click", function(){
+    if(noClickCount < 2){
+        moveButton(yesBtn);
+    } else {
+        finalScreen();
+    }
+});
+
+// NO drama stages
+noBtn.addEventListener("click", function(){
+
+    noClickCount++;
+
+    if(noClickCount == 1){
+        noBtn.innerText = "Think Again 🥺";
+    }
+    else if(noClickCount == 2){
+        noBtn.innerText = "Manu will cry 😭";
+    }
+    else if(noClickCount == 3){
+        noBtn.innerText = "Last chance 😤";
+    }
+    else{
+        finalScreen();
+    }
+
+    moveButton(noBtn);
+});
+
+function finalScreen(){
+    document.body.innerHTML = `
+    <h1 style="margin-top:100px;">YAYYYYYY 💖</h1>
+    <h2>Goaduu, you just made Manu the happiest person alive 💕</h2>
+    <h3>From today, officially my Valentine forever 😌💘</h3>
+    `;
+    confetti();
+}
+
+// Floating hearts
+setInterval(()=>{
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerText = "💖";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.fontSize = Math.random()*20 + 15 + "px";
+    document.body.appendChild(heart);
+    setTimeout(()=>{ heart.remove(); },6000);
+},500);
+
+// Simple confetti
+function confetti(){
+    for(let i=0;i<100;i++){
+        const conf = document.createElement("div");
+        conf.style.position = "absolute";
+        conf.style.width = "10px";
+        conf.style.height = "10px";
+        conf.style.backgroundColor = "white";
+        conf.style.left = Math.random()*100 + "vw";
+        conf.style.top = "-10px";
+        conf.style.animation = "fall 3s linear forwards";
+        document.body.appendChild(conf);
+    }
+}
+
 </script>
 
 </body>
