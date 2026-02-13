@@ -12,7 +12,7 @@ text-align:center;
 background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#ffdde1,#ffc3a0);
 background-size:400% 400%;
 animation:gradient 12s ease infinite;
-overflow:hidden;
+overflow-x:hidden;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -25,13 +25,14 @@ min-height:100vh;
 100%{background-position:0% 50%;}
 }
 
-/* Floating hearts */
+/* Floating Hearts */
 .heart{
 position:fixed;
 bottom:-20px;
 color:pink;
 animation:floatUp 6s linear infinite;
 opacity:0.8;
+pointer-events:none;
 }
 
 @keyframes floatUp{
@@ -39,64 +40,7 @@ opacity:0.8;
 100%{transform:translateY(-110vh);}
 }
 
-.container{
-margin-top:80px;
-color:black;
-width:100%;
-max-width:900px;
-padding:0 20px;
-}
-
-h1{font-size:42px;margin-bottom:15px;}
-h2{font-size:28px;margin-bottom:20px;}
-h3{font-size:22px;margin-bottom:15px;}
-p{font-size:18px;}
-
-img{
-width:280px;
-border-radius:20px;
-box-shadow:0 0 25px rgba(0,0,0,0.4);
-margin:25px auto;
-display:block;
-}
-
-#options{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-max-width:700px;
-margin:30px auto;
-}
-
-@media (max-width:600px){
-#options{grid-template-columns:1fr;}
-}
-
-.option{
-padding:18px;
-border-radius:25px;
-background:rgba(255,255,255,0.9);
-border:none;
-font-size:18px;
-cursor:pointer;
-transition:0.3s;
-font-weight:600;
-}
-
-.option:hover{
-transform:scale(1.05);
-background:white;
-}
-
-.hidden{display:none;}
-
-#message{
-margin-top:20px;
-font-weight:bold;
-font-size:20px;
-color:#000;
-}
-
+/* Tap overlay */
 #tapOverlay{
 position:fixed;
 top:0;
@@ -111,6 +55,95 @@ color:white;
 font-size:22px;
 z-index:999;
 cursor:pointer;
+}
+
+/* Main container */
+.container{
+margin-top:60px;
+color:black;
+width:100%;
+max-width:900px;
+padding:0 20px;
+box-sizing:border-box;
+}
+
+h1{font-size:40px;margin-bottom:10px;}
+h2{font-size:26px;margin-bottom:15px;}
+h3{font-size:20px;margin-bottom:10px;}
+p{font-size:16px;}
+
+img{
+width:280px;
+max-width:90%;
+height:auto;
+border-radius:20px;
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+margin:20px auto;
+display:block;
+}
+
+/* Desktop 2x2 */
+#options{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px;
+max-width:700px;
+margin:25px auto;
+}
+
+.option{
+padding:16px;
+border-radius:25px;
+background:rgba(255,255,255,0.9);
+border:none;
+font-size:18px;
+cursor:pointer;
+transition:0.3s;
+font-weight:600;
+}
+
+.option:hover{
+transform:scale(1.05);
+background:white;
+}
+
+#message{
+margin-top:15px;
+font-weight:bold;
+font-size:18px;
+color:#000;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px){
+
+.container{
+margin-top:30px;
+padding:0 15px;
+}
+
+h1{font-size:28px;}
+h2{font-size:20px;}
+h3{font-size:16px;}
+
+img{
+width:70%;
+margin:15px auto;
+}
+
+#options{
+grid-template-columns:1fr;
+gap:12px;
+}
+
+.option{
+font-size:16px;
+padding:14px;
+}
+
+#message{
+font-size:16px;
+}
 }
 </style>
 </head>
@@ -184,7 +217,6 @@ options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla
 let current=0;
 let noCount=0;
 
-/* Tap overlay ensures audio works */
 document.getElementById("tapOverlay").addEventListener("click",()=>{
 document.getElementById("tapOverlay").style.display="none";
 document.getElementById("intro").classList.remove("hidden");
