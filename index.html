@@ -5,170 +5,187 @@
 <title>For Goaduu 💖</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    overflow: hidden;
-    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #ffdde1);
-    background-size: 400% 400%;
-    animation: gradient 10s ease infinite;
-    color: #fff;
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    text-align:center;
+    background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#ffdde1,#ffc3a0);
+    background-size:400% 400%;
+    animation:gradient 12s ease infinite;
+    color:white;
+    overflow:hidden;
 }
 
-@keyframes gradient {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
+@keyframes gradient{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
 
-h1 {
-    margin-top: 30px;
-    font-size: 32px;
+.container{margin-top:40px;}
+
+img{
+    width:260px;
+    border-radius:20px;
+    box-shadow:0 0 25px rgba(255,255,255,0.6);
+    margin:20px;
 }
 
-.photo-container img {
-    width: 200px;
-    height: auto;
-    margin: 10px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255,255,255,0.6);
+button{
+    padding:12px 22px;
+    margin:10px;
+    font-size:16px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
 }
 
-button {
-    padding: 12px 25px;
-    font-size: 18px;
-    margin: 15px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#yesBtn {
-    background-color: #ff4d6d;
-    color: white;
-    position: relative;
-}
-
-#noBtn {
-    background-color: #6c757d;
-    color: white;
-    position: relative;
-}
-
-.heart {
-    position: absolute;
-    color: pink;
-    animation: float 6s linear infinite;
-}
-
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
-}
+.correct{background:#ff4d6d;color:white;}
+.option{background:white;color:black;}
+.hidden{display:none;}
 </style>
 </head>
 
 <body>
 
-<h1>Goaduu 💗</h1>
-<h2>Will You Be My Valentine? 💖</h2>
-
-<div class="photo-container">
-    <img src="Pranav1.png">
-    <img src="Pranav2.png">
-    <img src="Pranav3.png">
+<div id="intro" class="container">
+<h1>Hello Goaduu 💗</h1>
+<h2>Would you like to hear a song? 🎶</h2>
+<p>🔊 Don’t forget to increase your volume for the full experience 💖</p>
+<button onclick="startExperience(true)" class="correct">Yes, play it 💖</button>
+<button onclick="startExperience(false)" class="option">No thanks 😅</button>
 </div>
 
-<button id="yesBtn">YES 💘</button>
-<button id="noBtn">NO 🙄</button>
+<div id="game" class="hidden container">
+<img id="photo" src="">
+<h2 id="question"></h2>
+<div id="options"></div>
+</div>
 
-<!-- YouTube Instrumental Embed -->
-<iframe width="0" height="0" 
-src="https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1&loop=1&playlist=2Vv-BfVoq4g"
-frameborder="0"
-allow="autoplay">
-</iframe>
+<audio id="music" loop preload="auto">
+<source src="athousandyears.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
+const photos = [
+"Pranav1.png","Pranav2.png","Pranav3.png","Pranav4.png",
+"Pranav5.png","Pranav6.png","Pranav7.png","Pranav8.png",
+"Pranav9.png","Pranav10.png","Pranav11.png"
+];
+
+const questions = [
+
+{q:"Who is the reason behind all this effort and overthinking?",
+options:["Some random girl","A celebrity crush","My WiFi connection","The most beautiful lady reading this"],
+correct:3},
+
+{q:"Who looks extra cute even while concentrating on this poll?",
+options:["A serious professor","Someone pretending to focus","A lost puppy","The prettiest Dumbo holding the phone right now 🐘💗"],
+correct:3},
+
+{q:"Who is the luckiest person Pranav chose to share this with?",
+options:["His entire contact list","His office group","A random follower","The Bestest Person Pranav has shared this poll with 💌✨"],
+correct:3},
+
+{q:"Who overthinks small things but still manages to look gorgeous doing it?",
+options:["A confused philosopher","A drama queen","Someone stressed about nothing","The Gorgeous Overthinker 😌❤️"],
+correct:3},
+
+{q:"Who secretly means more to Pranav than she probably realizes?",
+options:["His playlist","His weekend plans","His sleep schedule","Pranav’s Bestfriend 💞"],
+correct:3},
+
+{q:"Who has been the only correct choice from the very beginning?",
+options:["Option A","Option B","Option C","The only correct answer ❤️"],
+correct:3},
+
+{q:"With whom is Pranav the happiest person in the universe?",
+options:["Unlimited WiFi","Pizza weekends","His blanket","It's ME 😌✨"],
+correct:3},
+
+{q:"Without who would Pranav be the loneliest for life?",
+options:["Without coffee","Without sleep","Without vacations","Without Goaduu! 💗"],
+correct:3},
+
+{q:"What is the main reason Pranav has changed so much for better?",
+options:["Gym motivation","New year resolution","Random inspiration","Only and only Goaduu! 💖✨"],
+correct:3},
+
+{q:"Who is Pranav’s favourite Bengal sweet Rasgulla?",
+options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla feels jealous right now 🍡💘"],
+correct:3},
+
+{q:"Will you be my Valentine plsssss??? 💘",
+options:["YES 💖","NO 🙄"],
+correct:0}
+];
+
+let current = 0;
 let noClickCount = 0;
 
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
+function startExperience(playMusic){
+document.getElementById("intro").classList.add("hidden");
+document.getElementById("game").classList.remove("hidden");
 
-function moveButton(btn){
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 50);
-    btn.style.position = "absolute";
-    btn.style.left = x + "px";
-    btn.style.top = y + "px";
+if(playMusic){
+let music=document.getElementById("music");
+music.volume=0.4;   // 40% volume
+music.play().catch(()=>{});
+}
+loadQuestion();
 }
 
-// YES runs away initially
-yesBtn.addEventListener("click", function(){
-    if(noClickCount < 2){
-        moveButton(yesBtn);
-    } else {
-        finalScreen();
-    }
+function loadQuestion(){
+document.getElementById("photo").src=photos[current];
+document.getElementById("question").innerText=questions[current].q;
+
+let optionsDiv=document.getElementById("options");
+optionsDiv.innerHTML="";
+
+questions[current].options.forEach((opt,index)=>{
+let btn=document.createElement("button");
+btn.innerText=opt;
+btn.className="option";
+btn.onclick=()=>checkAnswer(index);
+optionsDiv.appendChild(btn);
 });
+}
 
-// NO drama stages
-noBtn.addEventListener("click", function(){
+function checkAnswer(index){
 
-    noClickCount++;
+// Final question special handling
+if(current===10 && index===1){
+noChaos();
+return;
+}
 
-    if(noClickCount == 1){
-        noBtn.innerText = "Think Again 🥺";
-    }
-    else if(noClickCount == 2){
-        noBtn.innerText = "Manu will cry 😭";
-    }
-    else if(noClickCount == 3){
-        noBtn.innerText = "Last chance 😤";
-    }
-    else{
-        finalScreen();
-    }
+if(index===questions[current].correct){
+current++;
+if(current<questions.length){
+loadQuestion();
+}else{
+finalScreen();
+}
+}else{
+alert("Wrong answer 😌 Try again.");
+}
+}
 
-    moveButton(noBtn);
-});
+function noChaos(){
+noClickCount++;
+if(noClickCount==1) alert("Think Again 🥺");
+else if(noClickCount==2) alert("Manu will cry 😭");
+else if(noClickCount==3) alert("Last chance 😤");
+else finalScreen();
+}
 
 function finalScreen(){
-    document.body.innerHTML = `
-    <h1 style="margin-top:100px;">YAYYYYYY 💖</h1>
-    <h2>Goaduu, you just made Manu the happiest person alive 💕</h2>
-    <h3>From today, officially my Valentine forever 😌💘</h3>
-    `;
-    confetti();
-}
-
-// Floating hearts
-setInterval(()=>{
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerText = "💖";
-    heart.style.left = Math.random()*100 + "vw";
-    heart.style.fontSize = Math.random()*20 + 15 + "px";
-    document.body.appendChild(heart);
-    setTimeout(()=>{ heart.remove(); },6000);
-},500);
-
-// Simple confetti
-function confetti(){
-    for(let i=0;i<100;i++){
-        const conf = document.createElement("div");
-        conf.style.position = "absolute";
-        conf.style.width = "10px";
-        conf.style.height = "10px";
-        conf.style.backgroundColor = "white";
-        conf.style.left = Math.random()*100 + "vw";
-        conf.style.top = "-10px";
-        conf.style.animation = "fall 3s linear forwards";
-        document.body.appendChild(conf);
-    }
+document.getElementById("game").innerHTML=`
+<h1 style="margin-top:80px;">YESS!! 💍💖</h1>
+<h2>Goaduu, you just made Manu the happiest person alive 💕</h2>
+<img src="Pranav11.png">
+`;
 }
 
 </script>
