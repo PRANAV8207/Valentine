@@ -55,7 +55,6 @@ border-radius:20px;
 box-shadow:0 0 25px rgba(0,0,0,0.4);
 margin:20px auto;
 display:block;
-transition:1s;
 }
 
 #options{
@@ -64,6 +63,7 @@ grid-template-columns:1fr 1fr;
 gap:15px;
 max-width:600px;
 margin:20px auto;
+position:relative;
 }
 
 @media (max-width:768px){
@@ -78,8 +78,9 @@ background:white;
 border:none;
 font-size:16px;
 cursor:pointer;
-transition:0.3s;
 font-weight:bold;
+position:relative;
+transition:0.3s;
 }
 
 .option:hover{transform:scale(1.05);}
@@ -156,6 +157,8 @@ options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla
 ];
 
 let current=0;
+let dodgeCount=0;
+let stage=0;
 
 function startMusic(choice){
 let music=document.getElementById("music");
@@ -193,66 +196,55 @@ optionsDiv.appendChild(btn);
 function checkAnswer(index){
 if(index===questions[current].correct){
 current++;
-if(current===10){dramaticPrompt();}
+if(current===10){startFinalFlow();}
 else{loadQuestion();}
 }else{
 document.getElementById("message").innerText="Wrong answer 😌 Try again.";
 }
 }
 
-function dramaticPrompt(){
-document.getElementById("game").innerHTML=`
-<h3>Ufff… you're on fire 🔥</h3>
-<h3>If you already know so much about me…</h3>
-<h3>There’s just one last thing I want to ask you…</h3>
-<h1 id="countdown"></h1>
-`;
-let count=3;
-let cd=document.getElementById("countdown");
-let interval=setInterval(()=>{
-cd.innerText=count;
-count--;
-if(count<0){
-clearInterval(interval);
+function startFinalFlow(){
+document.getElementById("photo").src="Pranav11.png";
+document.getElementById("question").innerText="Will you be my Valentine? 💘";
 stageOne();
 }
-},1000);
-}
 
-/* STAGE 1 */
 function stageOne(){
-document.getElementById("game").innerHTML=`
-<img src="Pranav11.png">
-<h2>Will you be my Valentine? 💘</h2>
-<div id="options">
+stage=1;
+document.getElementById("options").innerHTML=`
 <button class="option" onclick="stageTwo()">NO 🙄</button>
 <button class="option" onclick="stageTwo()">NO 🙄</button>
-</div>
-<div id="message"></div>
 `;
+document.getElementById("message").innerText="";
 }
 
 function stageTwo(){
-document.getElementById("message").innerText="Sorry 😌 Try again";
+document.getElementById("message").innerText="Think again 🥺";
 setTimeout(()=>{
+stage=2;
 document.getElementById("options").innerHTML=`
-<button class="option" onclick="yesDodge()">YES 💖</button>
-<button class="option" onclick="noAgain()">NO 🙄</button>
+<button class="option" onclick="confirmYes()">YES 💖</button>
+<button class="option" onclick="stageTwo()">NO 🙄</button>
 `;
 },800);
 }
 
-function noAgain(){
-document.getElementById("message").innerText="Think again 🥺";
+function confirmYes(){
+if(stage===2){
+document.getElementById("message").innerText="Are you sure? 😏";
+stage=3;
+}else if(stage===3){
+dodgeYes();
+}
 }
 
-let dodgeCount=0;
-function yesDodge(){
-dodgeCount++;
+function dodgeYes(){
+let yesBtn=document.querySelector("#options button");
 if(dodgeCount<3){
-let btn=document.querySelector(".option");
-btn.style.position="relative";
-btn.style.left=(Math.random()*100-50)+"px";
+yesBtn.style.position="relative";
+yesBtn.style.left=(Math.random()*200-100)+"px";
+yesBtn.style.top=(Math.random()*60-30)+"px";
+dodgeCount++;
 }else{
 document.getElementById("options").innerHTML=`
 <button class="option" onclick="finalScreen()">YESS!! 💍💖</button>
@@ -267,8 +259,9 @@ document.getElementById("game").innerHTML=`
 <h3>I love you so much Goaduu 😘❤️✨</h3>
 <img src="Pranav11.png">
 `;
+
 setTimeout(()=>{
-document.body.style.filter="blur(8px)";
+document.body.style.filter="blur(6px)";
 clearInterval(heartInterval);
 heartInterval=setInterval(()=>{
 let heart=document.createElement("div");
@@ -279,7 +272,7 @@ heart.style.fontSize="40px";
 document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),6000);
 },200);
-},15000);
+},10000);
 }
 </script>
 
