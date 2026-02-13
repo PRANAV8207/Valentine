@@ -12,7 +12,6 @@ text-align:center;
 background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#ffdde1,#ffc3a0);
 background-size:400% 400%;
 animation:gradient 12s ease infinite;
-color:white;
 overflow:hidden;
 }
 
@@ -22,12 +21,11 @@ overflow:hidden;
 100%{background-position:0% 50%;}
 }
 
-/* Floating hearts */
+/* Floating Hearts */
 .heart{
 position:fixed;
 bottom:-20px;
 color:pink;
-font-size:20px;
 animation:floatUp 6s linear infinite;
 opacity:0.8;
 }
@@ -37,55 +35,79 @@ opacity:0.8;
 100%{transform:translateY(-110vh);}
 }
 
-.container{margin-top:40px;}
+.container{
+margin-top:40px;
+color:black;
+}
 
 img{
 width:260px;
 border-radius:20px;
-box-shadow:0 0 25px rgba(255,255,255,0.7);
+box-shadow:0 0 25px rgba(0,0,0,0.4);
 margin:20px;
-transition:0.5s;
+}
+
+#options{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+max-width:800px;
+margin:0 auto;
 }
 
 .option{
-display:block;
-width:80%;
-margin:10px auto;
 padding:14px;
-border-radius:30px;
-background:rgba(255,255,255,0.2);
-backdrop-filter:blur(5px);
-color:white;
-font-size:16px;
-border:2px solid rgba(255,255,255,0.4);
+border-radius:25px;
+background:rgba(255,255,255,0.8);
+border:none;
+font-size:15px;
 cursor:pointer;
 transition:0.3s;
 }
 
 .option:hover{
 transform:scale(1.05);
-background:rgba(255,255,255,0.4);
+background:white;
 }
 
 .hidden{display:none;}
 
 #message{
 margin-top:15px;
-font-size:18px;
-color:#fff;
 font-weight:bold;
+color:#000;
+}
+
+/* Tap Overlay */
+#tapOverlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:22px;
+z-index:999;
+cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div id="intro" class="container">
+<div id="tapOverlay">💖 Tap Anywhere To Begin The Experience 💖</div>
+
+<div id="intro" class="container hidden">
 <h1>Hello Goaduu 💗</h1>
 <h2>Would you like to hear a song? 🎶</h2>
-<p>🔊 Don’t forget to increase your volume for the full experience 💖</p>
-<button class="option" onclick="startExperience(true)">Yes, play it 💖</button>
-<button class="option" onclick="startExperience(false)">No thanks 😅</button>
+<p>🔊 Increase your volume for full experience 💖</p>
+<button class="option" onclick="musicChoice(true)">Yes, play it 💖</button>
+<button class="option" onclick="musicChoice(false)">No thanks 😅</button>
+<div id="musicMsg"></div>
 </div>
 
 <div id="game" class="hidden container">
@@ -95,13 +117,13 @@ font-weight:bold;
 <div id="message"></div>
 </div>
 
-<audio id="music" loop>
+<audio id="music" loop preload="auto">
 <source src="athousandyears.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 
-/* Floating hearts generator */
+/* Floating hearts */
 setInterval(()=>{
 let heart=document.createElement("div");
 heart.className="heart";
@@ -119,65 +141,60 @@ const photos=[
 ];
 
 const questions=[
-
 {q:"Who is the reason behind all this effort and overthinking?",
-options:["Some random girl","A celebrity crush","My WiFi connection","The most beautiful lady reading this"],
-correct:3},
-
+options:["Some random girl","A celebrity crush","My WiFi connection","The most beautiful lady reading this"],correct:3},
 {q:"Who looks extra cute even while concentrating on this poll?",
-options:["A serious professor","Someone pretending to focus","A lost puppy","The prettiest Dumbo holding the phone right now 🐘💗"],
-correct:3},
-
+options:["A serious professor","Someone pretending to focus","A lost puppy","The prettiest Dumbo holding the phone right now 🐘💗"],correct:3},
 {q:"Who is the luckiest person Pranav chose to share this with?",
-options:["His entire contact list","His office group","A random follower","The Bestest Person Pranav has shared this poll with 💌✨"],
-correct:3},
-
+options:["His entire contact list","His office group","A random follower","The Bestest Person Pranav has shared this poll with 💌✨"],correct:3},
 {q:"Who overthinks small things but still manages to look gorgeous doing it?",
-options:["A confused philosopher","A drama queen","Someone stressed about nothing","The Gorgeous Overthinker 😌❤️"],
-correct:3},
-
+options:["A confused philosopher","A drama queen","Someone stressed about nothing","The Gorgeous Overthinker 😌❤️"],correct:3},
 {q:"Who secretly means more to Pranav than she probably realizes?",
-options:["His playlist","His weekend plans","His sleep schedule","Pranav’s Bestfriend 💞"],
-correct:3},
-
+options:["His playlist","His weekend plans","His sleep schedule","Pranav’s Bestfriend 💞"],correct:3},
 {q:"Who has been the only correct choice from the very beginning?",
-options:["Option A","Option B","Option C","The only correct answer ❤️"],
-correct:3},
-
+options:["Option A","Option B","Option C","The only correct answer ❤️"],correct:3},
 {q:"With whom is Pranav the happiest person in the universe?",
-options:["Unlimited WiFi","Pizza weekends","His blanket","It's ME 😌✨"],
-correct:3},
-
+options:["Unlimited WiFi","Pizza weekends","His blanket","It's ME 😌✨"],correct:3},
 {q:"Without who would Pranav be the loneliest for life?",
-options:["Without coffee","Without sleep","Without vacations","Without Goaduu! 💗"],
-correct:3},
-
+options:["Without coffee","Without sleep","Without vacations","Without Goaduu! 💗"],correct:3},
 {q:"What is the main reason Pranav has changed so much for better?",
-options:["Gym motivation","New year resolution","Random inspiration","Only and only Goaduu! 💖✨"],
-correct:3},
-
+options:["Gym motivation","New year resolution","Random inspiration","Only and only Goaduu! 💖✨"],correct:3},
 {q:"Who is Pranav’s favourite Bengal sweet Rasgulla?",
-options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla feels jealous right now 🍡💘"],
-correct:3},
-
+options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla feels jealous right now 🍡💘"],correct:3},
 {q:"Will you be my Valentine plsssss??? 💘",
-options:["YES 💖","NO 🙄"],
-correct:0}
+options:["YES 💖","NO 🙄"],correct:0}
 ];
 
 let current=0;
 let noCount=0;
 
-function startExperience(playMusic){
-document.getElementById("intro").classList.add("hidden");
-document.getElementById("game").classList.remove("hidden");
+/* Tap overlay ensures audio works everywhere */
+document.getElementById("tapOverlay").addEventListener("click",()=>{
+document.getElementById("tapOverlay").style.display="none";
+document.getElementById("intro").classList.remove("hidden");
+});
 
-if(playMusic){
+function musicChoice(choice){
 let music=document.getElementById("music");
-music.volume=0.4;
-music.play().catch(()=>{});
+music.load();
+music.currentTime=0;
+music.volume=1.0;
+
+if(choice){
+music.play();
+startGame();
+}else{
+document.getElementById("musicMsg").innerText="I insist… you HAVE to hear it 😌";
+setTimeout(()=>{
+music.play();
+startGame();
+},1200);
+}
 }
 
+function startGame(){
+document.getElementById("intro").classList.add("hidden");
+document.getElementById("game").classList.remove("hidden");
 loadQuestion();
 }
 
@@ -185,10 +202,8 @@ function loadQuestion(){
 document.getElementById("photo").src=photos[current];
 document.getElementById("question").innerText=questions[current].q;
 document.getElementById("message").innerText="";
-
 let optionsDiv=document.getElementById("options");
 optionsDiv.innerHTML="";
-
 questions[current].options.forEach((opt,index)=>{
 let btn=document.createElement("button");
 btn.innerText=opt;
@@ -212,6 +227,10 @@ return;
 
 if(index===questions[current].correct){
 current++;
+if(current===10){
+dramaticPrompt();
+return;
+}
 if(current<questions.length){
 loadQuestion();
 }else{
@@ -222,9 +241,32 @@ document.getElementById("message").innerText="Wrong answer 😌 Try again.";
 }
 }
 
+function dramaticPrompt(){
+document.getElementById("game").innerHTML=`
+<h2>Ufff… you're on fire 🔥</h2>
+<h3>If you already know so much about me…</h3>
+<h3>There’s just one last thing I want to ask you…</h3>
+<h1 id="countdown"></h1>
+`;
+
+let count=1;
+let cd=document.getElementById("countdown");
+
+let interval=setInterval(()=>{
+cd.innerText=count;
+count++;
+if(count>3){
+clearInterval(interval);
+current=10;
+document.getElementById("game").classList.remove("hidden");
+loadQuestion();
+}
+},1000);
+}
+
 function finalScreen(){
 document.getElementById("game").innerHTML=`
-<h1 style="margin-top:80px;">YESS!! 💍💖</h1>
+<h1>YESS!! 💍💖</h1>
 <h2>Goaduu, you just made Manu the happiest person alive 💕</h2>
 <img src="Pranav11.png">
 `;
