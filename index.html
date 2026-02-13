@@ -13,6 +13,10 @@ background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#ffdde1,#ffc3a0);
 background-size:400% 400%;
 animation:gradient 12s ease infinite;
 overflow:hidden;
+display:flex;
+flex-direction:column;
+align-items:center;
+min-height:100vh;
 }
 
 @keyframes gradient{
@@ -21,7 +25,7 @@ overflow:hidden;
 100%{background-position:0% 50%;}
 }
 
-/* Floating Hearts */
+/* Floating hearts */
 .heart{
 position:fixed;
 bottom:-20px;
@@ -36,33 +40,47 @@ opacity:0.8;
 }
 
 .container{
-margin-top:40px;
+margin-top:80px;
 color:black;
+width:100%;
+max-width:900px;
+padding:0 20px;
 }
 
+h1{font-size:42px;margin-bottom:15px;}
+h2{font-size:28px;margin-bottom:20px;}
+h3{font-size:22px;margin-bottom:15px;}
+p{font-size:18px;}
+
 img{
-width:260px;
+width:280px;
 border-radius:20px;
 box-shadow:0 0 25px rgba(0,0,0,0.4);
-margin:20px;
+margin:25px auto;
+display:block;
 }
 
 #options{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
-max-width:800px;
-margin:0 auto;
+grid-template-columns:1fr 1fr;
+gap:20px;
+max-width:700px;
+margin:30px auto;
+}
+
+@media (max-width:600px){
+#options{grid-template-columns:1fr;}
 }
 
 .option{
-padding:14px;
+padding:18px;
 border-radius:25px;
-background:rgba(255,255,255,0.8);
+background:rgba(255,255,255,0.9);
 border:none;
-font-size:15px;
+font-size:18px;
 cursor:pointer;
 transition:0.3s;
+font-weight:600;
 }
 
 .option:hover{
@@ -73,12 +91,12 @@ background:white;
 .hidden{display:none;}
 
 #message{
-margin-top:15px;
+margin-top:20px;
 font-weight:bold;
+font-size:20px;
 color:#000;
 }
 
-/* Tap Overlay */
 #tapOverlay{
 position:fixed;
 top:0;
@@ -99,7 +117,7 @@ cursor:pointer;
 
 <body>
 
-<div id="tapOverlay">💖 Tap Anywhere To Begin The Experience 💖</div>
+<div id="tapOverlay">💖 Tap Anywhere To Begin 💖</div>
 
 <div id="intro" class="container hidden">
 <h1>Hello Goaduu 💗</h1>
@@ -160,15 +178,13 @@ options:["Without coffee","Without sleep","Without vacations","Without Goaduu! �
 {q:"What is the main reason Pranav has changed so much for better?",
 options:["Gym motivation","New year resolution","Random inspiration","Only and only Goaduu! 💖✨"],correct:3},
 {q:"Who is Pranav’s favourite Bengal sweet Rasgulla?",
-options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla feels jealous right now 🍡💘"],correct:3},
-{q:"Will you be my Valentine plsssss??? 💘",
-options:["YES 💖","NO 🙄"],correct:0}
+options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla feels jealous right now 🍡💘"],correct:3}
 ];
 
 let current=0;
 let noCount=0;
 
-/* Tap overlay ensures audio works everywhere */
+/* Tap overlay ensures audio works */
 document.getElementById("tapOverlay").addEventListener("click",()=>{
 document.getElementById("tapOverlay").style.display="none";
 document.getElementById("intro").classList.remove("hidden");
@@ -214,27 +230,12 @@ optionsDiv.appendChild(btn);
 }
 
 function checkAnswer(index){
-
-if(current===10 && index===1){
-noCount++;
-let msg=document.getElementById("message");
-if(noCount==1) msg.innerText="Think Again 🥺";
-else if(noCount==2) msg.innerText="Manu will cry 😭";
-else if(noCount==3) msg.innerText="Last chance 😤";
-else finalScreen();
-return;
-}
-
 if(index===questions[current].correct){
 current++;
 if(current===10){
 dramaticPrompt();
-return;
-}
-if(current<questions.length){
-loadQuestion();
 }else{
-finalScreen();
+loadQuestion();
 }
 }else{
 document.getElementById("message").innerText="Wrong answer 😌 Try again.";
@@ -249,25 +250,56 @@ document.getElementById("game").innerHTML=`
 <h1 id="countdown"></h1>
 `;
 
-let count=1;
+let count=3;
 let cd=document.getElementById("countdown");
 
 let interval=setInterval(()=>{
 cd.innerText=count;
-count++;
-if(count>3){
+count--;
+if(count<0){
 clearInterval(interval);
-current=10;
-document.getElementById("game").classList.remove("hidden");
-loadQuestion();
+showFinalQuestion();
 }
 },1000);
 }
 
+function showFinalQuestion(){
+document.getElementById("game").innerHTML=`
+<img src="Pranav11.png">
+<h2>Will you be my Valentine plsssss??? 💘</h2>
+<div id="options"></div>
+<div id="message"></div>
+`;
+
+let optionsDiv=document.getElementById("options");
+
+["YES 💖","NO 🙄"].forEach((opt,index)=>{
+let btn=document.createElement("button");
+btn.innerText=opt;
+btn.className="option";
+btn.onclick=()=>handleFinal(index);
+optionsDiv.appendChild(btn);
+});
+}
+
+function handleFinal(index){
+let msg=document.getElementById("message");
+
+if(index===0){
+finalScreen();
+}else{
+noCount++;
+if(noCount==1) msg.innerText="Think Again 🥺";
+else if(noCount==2) msg.innerText="Manu will cry 😭";
+else if(noCount==3) msg.innerText="Last chance 😤";
+else finalScreen();
+}
+}
+
 function finalScreen(){
 document.getElementById("game").innerHTML=`
-<h1>YESS!! 💍💖</h1>
-<h2>Goaduu, you just made Manu the happiest person alive 💕</h2>
+<h1>YAYYYYYY 💍💖</h1>
+<h2>I love you so much Goaduu 😘❤️✨</h2>
 <img src="Pranav11.png">
 `;
 }
