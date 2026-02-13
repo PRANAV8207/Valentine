@@ -6,43 +6,75 @@
 
 <style>
 body{
-    margin:0;
-    font-family: Arial, sans-serif;
-    text-align:center;
-    background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#ffdde1,#ffc3a0);
-    background-size:400% 400%;
-    animation:gradient 12s ease infinite;
-    color:white;
-    overflow:hidden;
+margin:0;
+font-family:'Segoe UI',sans-serif;
+text-align:center;
+background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#ffdde1,#ffc3a0);
+background-size:400% 400%;
+animation:gradient 12s ease infinite;
+color:white;
+overflow:hidden;
 }
 
 @keyframes gradient{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* Floating hearts */
+.heart{
+position:fixed;
+bottom:-20px;
+color:pink;
+font-size:20px;
+animation:floatUp 6s linear infinite;
+opacity:0.8;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(0);}
+100%{transform:translateY(-110vh);}
 }
 
 .container{margin-top:40px;}
 
 img{
-    width:260px;
-    border-radius:20px;
-    box-shadow:0 0 25px rgba(255,255,255,0.6);
-    margin:20px;
+width:260px;
+border-radius:20px;
+box-shadow:0 0 25px rgba(255,255,255,0.7);
+margin:20px;
+transition:0.5s;
 }
 
-button{
-    padding:12px 22px;
-    margin:10px;
-    font-size:16px;
-    border:none;
-    border-radius:25px;
-    cursor:pointer;
+.option{
+display:block;
+width:80%;
+margin:10px auto;
+padding:14px;
+border-radius:30px;
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(5px);
+color:white;
+font-size:16px;
+border:2px solid rgba(255,255,255,0.4);
+cursor:pointer;
+transition:0.3s;
 }
 
-.correct{background:#ff4d6d;color:white;}
-.option{background:white;color:black;}
+.option:hover{
+transform:scale(1.05);
+background:rgba(255,255,255,0.4);
+}
+
 .hidden{display:none;}
+
+#message{
+margin-top:15px;
+font-size:18px;
+color:#fff;
+font-weight:bold;
+}
 </style>
 </head>
 
@@ -52,29 +84,41 @@ button{
 <h1>Hello Goaduu 💗</h1>
 <h2>Would you like to hear a song? 🎶</h2>
 <p>🔊 Don’t forget to increase your volume for the full experience 💖</p>
-<button onclick="startExperience(true)" class="correct">Yes, play it 💖</button>
-<button onclick="startExperience(false)" class="option">No thanks 😅</button>
+<button class="option" onclick="startExperience(true)">Yes, play it 💖</button>
+<button class="option" onclick="startExperience(false)">No thanks 😅</button>
 </div>
 
 <div id="game" class="hidden container">
 <img id="photo" src="">
 <h2 id="question"></h2>
 <div id="options"></div>
+<div id="message"></div>
 </div>
 
-<audio id="music" loop preload="auto">
+<audio id="music" loop>
 <source src="athousandyears.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 
-const photos = [
+/* Floating hearts generator */
+setInterval(()=>{
+let heart=document.createElement("div");
+heart.className="heart";
+heart.innerText="💖";
+heart.style.left=Math.random()*100+"vw";
+heart.style.fontSize=(Math.random()*20+15)+"px";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),6000);
+},500);
+
+const photos=[
 "Pranav1.png","Pranav2.png","Pranav3.png","Pranav4.png",
 "Pranav5.png","Pranav6.png","Pranav7.png","Pranav8.png",
 "Pranav9.png","Pranav10.png","Pranav11.png"
 ];
 
-const questions = [
+const questions=[
 
 {q:"Who is the reason behind all this effort and overthinking?",
 options:["Some random girl","A celebrity crush","My WiFi connection","The most beautiful lady reading this"],
@@ -121,8 +165,8 @@ options:["YES 💖","NO 🙄"],
 correct:0}
 ];
 
-let current = 0;
-let noClickCount = 0;
+let current=0;
+let noCount=0;
 
 function startExperience(playMusic){
 document.getElementById("intro").classList.add("hidden");
@@ -130,15 +174,17 @@ document.getElementById("game").classList.remove("hidden");
 
 if(playMusic){
 let music=document.getElementById("music");
-music.volume=0.4;   // 40% volume
+music.volume=0.4;
 music.play().catch(()=>{});
 }
+
 loadQuestion();
 }
 
 function loadQuestion(){
 document.getElementById("photo").src=photos[current];
 document.getElementById("question").innerText=questions[current].q;
+document.getElementById("message").innerText="";
 
 let optionsDiv=document.getElementById("options");
 optionsDiv.innerHTML="";
@@ -154,9 +200,13 @@ optionsDiv.appendChild(btn);
 
 function checkAnswer(index){
 
-// Final question special handling
 if(current===10 && index===1){
-noChaos();
+noCount++;
+let msg=document.getElementById("message");
+if(noCount==1) msg.innerText="Think Again 🥺";
+else if(noCount==2) msg.innerText="Manu will cry 😭";
+else if(noCount==3) msg.innerText="Last chance 😤";
+else finalScreen();
 return;
 }
 
@@ -168,16 +218,8 @@ loadQuestion();
 finalScreen();
 }
 }else{
-alert("Wrong answer 😌 Try again.");
+document.getElementById("message").innerText="Wrong answer 😌 Try again.";
 }
-}
-
-function noChaos(){
-noClickCount++;
-if(noClickCount==1) alert("Think Again 🥺");
-else if(noClickCount==2) alert("Manu will cry 😭");
-else if(noClickCount==3) alert("Last chance 😤");
-else finalScreen();
 }
 
 function finalScreen(){
@@ -187,7 +229,6 @@ document.getElementById("game").innerHTML=`
 <img src="Pranav11.png">
 `;
 }
-
 </script>
 
 </body>
