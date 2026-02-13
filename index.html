@@ -25,7 +25,6 @@ min-height:100vh;
 100%{background-position:0% 50%;}
 }
 
-/* Floating Hearts */
 .heart{
 position:fixed;
 bottom:-20px;
@@ -40,24 +39,6 @@ pointer-events:none;
 100%{transform:translateY(-110vh);}
 }
 
-/* Tap overlay */
-#tapOverlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-font-size:22px;
-z-index:999;
-cursor:pointer;
-}
-
-/* Main container */
 .container{
 margin-top:60px;
 color:black;
@@ -67,10 +48,9 @@ padding:0 20px;
 box-sizing:border-box;
 }
 
-h1{font-size:40px;margin-bottom:10px;}
-h2{font-size:26px;margin-bottom:15px;}
-h3{font-size:20px;margin-bottom:10px;}
-p{font-size:16px;}
+h1{font-size:36px;margin-bottom:10px;}
+h2{font-size:24px;margin-bottom:15px;}
+h3{font-size:18px;margin-bottom:10px;}
 
 img{
 width:280px;
@@ -80,9 +60,9 @@ border-radius:20px;
 box-shadow:0 0 25px rgba(0,0,0,0.4);
 margin:20px auto;
 display:block;
+transition:0.3s ease-in-out;
 }
 
-/* Desktop 2x2 */
 #options{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -91,78 +71,46 @@ max-width:700px;
 margin:25px auto;
 }
 
+@media (max-width:768px){
+.container{margin-top:30px;}
+#options{grid-template-columns:1fr;}
+img{width:70%;}
+}
+
 .option{
 padding:16px;
 border-radius:25px;
-background:rgba(255,255,255,0.9);
+background:rgba(255,255,255,0.95);
 border:none;
-font-size:18px;
+font-size:17px;
 cursor:pointer;
-transition:0.3s;
 font-weight:600;
+transition:0.3s;
 }
 
 .option:hover{
 transform:scale(1.05);
-background:white;
 }
 
 #message{
 margin-top:15px;
 font-weight:bold;
 font-size:18px;
-color:#000;
-}
-
-/* Mobile optimization */
-@media (max-width: 768px){
-
-.container{
-margin-top:30px;
-padding:0 15px;
-}
-
-h1{font-size:28px;}
-h2{font-size:20px;}
-h3{font-size:16px;}
-
-img{
-width:70%;
-margin:15px auto;
-}
-
-#options{
-grid-template-columns:1fr;
-gap:12px;
-}
-
-.option{
-font-size:16px;
-padding:14px;
-}
-
-#message{
-font-size:16px;
-}
 }
 </style>
 </head>
 
 <body>
 
-<div id="tapOverlay">💖 Tap Anywhere To Begin 💖</div>
-
-<div id="intro" class="container hidden">
+<div id="intro" class="container">
 <h1>Hello Goaduu 💗</h1>
 <h2>Would you like to hear a song? 🎶</h2>
 <p>🔊 Increase your volume for full experience 💖</p>
-<button class="option" onclick="musicChoice(true)">Yes, play it 💖</button>
-<button class="option" onclick="musicChoice(false)">No thanks 😅</button>
-<div id="musicMsg"></div>
+<button class="option" onclick="startExperience()">Yes, play it 💖</button>
 </div>
 
-<div id="game" class="hidden container">
-<img id="photo" src="">
+<div id="game" class="container" style="display:none;">
+<img id="photo">
 <h2 id="question"></h2>
 <div id="options"></div>
 <div id="message"></div>
@@ -174,6 +122,18 @@ font-size:16px;
 
 <script>
 
+/* PRELOAD IMAGES FOR ZERO DELAY */
+const photoFiles = [
+"Pranav1.png","Pranav2.png","Pranav3.png","Pranav4.png",
+"Pranav5.png","Pranav6.png","Pranav7.png","Pranav8.png",
+"Pranav9.png","Pranav10.png","Pranav11.png"
+];
+
+photoFiles.forEach(src=>{
+let img=new Image();
+img.src=src;
+});
+
 /* Floating hearts */
 setInterval(()=>{
 let heart=document.createElement("div");
@@ -184,12 +144,6 @@ heart.style.fontSize=(Math.random()*20+15)+"px";
 document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),6000);
 },500);
-
-const photos=[
-"Pranav1.png","Pranav2.png","Pranav3.png","Pranav4.png",
-"Pranav5.png","Pranav6.png","Pranav7.png","Pranav8.png",
-"Pranav9.png","Pranav10.png","Pranav11.png"
-];
 
 const questions=[
 {q:"Who is the reason behind all this effort and overthinking?",
@@ -217,37 +171,19 @@ options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla
 let current=0;
 let noCount=0;
 
-document.getElementById("tapOverlay").addEventListener("click",()=>{
-document.getElementById("tapOverlay").style.display="none";
-document.getElementById("intro").classList.remove("hidden");
-});
+function startExperience(){
+document.getElementById("intro").style.display="none";
+document.getElementById("game").style.display="block";
 
-function musicChoice(choice){
 let music=document.getElementById("music");
-music.load();
-music.currentTime=0;
 music.volume=1.0;
-
-if(choice){
 music.play();
-startGame();
-}else{
-document.getElementById("musicMsg").innerText="I insist… you HAVE to hear it 😌";
-setTimeout(()=>{
-music.play();
-startGame();
-},1200);
-}
-}
 
-function startGame(){
-document.getElementById("intro").classList.add("hidden");
-document.getElementById("game").classList.remove("hidden");
 loadQuestion();
 }
 
 function loadQuestion(){
-document.getElementById("photo").src=photos[current];
+document.getElementById("photo").src=photoFiles[current];
 document.getElementById("question").innerText=questions[current].q;
 document.getElementById("message").innerText="";
 let optionsDiv=document.getElementById("options");
