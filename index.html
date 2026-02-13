@@ -17,6 +17,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 min-height:100vh;
+transition:1s;
 }
 
 @keyframes gradient{
@@ -40,57 +41,48 @@ pointer-events:none;
 }
 
 .container{
-margin-top:60px;
+margin-top:40px;
 color:black;
 width:100%;
 max-width:900px;
 padding:0 20px;
-box-sizing:border-box;
 }
 
-h1{font-size:36px;margin-bottom:10px;}
-h2{font-size:24px;margin-bottom:15px;}
-h3{font-size:18px;margin-bottom:10px;}
-
 img{
-width:280px;
+width:260px;
 max-width:90%;
-height:auto;
 border-radius:20px;
 box-shadow:0 0 25px rgba(0,0,0,0.4);
 margin:20px auto;
 display:block;
-transition:0.3s ease-in-out;
+transition:1s;
 }
 
 #options{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:18px;
-max-width:700px;
-margin:25px auto;
+gap:15px;
+max-width:600px;
+margin:20px auto;
 }
 
 @media (max-width:768px){
-.container{margin-top:30px;}
 #options{grid-template-columns:1fr;}
 img{width:70%;}
 }
 
 .option{
-padding:16px;
+padding:14px;
 border-radius:25px;
-background:rgba(255,255,255,0.95);
+background:white;
 border:none;
-font-size:17px;
+font-size:16px;
 cursor:pointer;
-font-weight:600;
 transition:0.3s;
+font-weight:bold;
 }
 
-.option:hover{
-transform:scale(1.05);
-}
+.option:hover{transform:scale(1.05);}
 
 #message{
 margin-top:15px;
@@ -103,10 +95,10 @@ font-size:18px;
 <body>
 
 <div id="intro" class="container">
-<h1>Hello Goaduu 💗</h1>
 <h2>Would you like to hear a song? 🎶</h2>
-<p>🔊 Increase your volume for full experience 💖</p>
-<button class="option" onclick="startExperience()">Yes, play it 💖</button>
+<button class="option" onclick="startMusic(true)">Yes, play it 💖</button>
+<button class="option" onclick="startMusic(false)">No thanks 😅</button>
+<div id="musicMsg"></div>
 </div>
 
 <div id="game" class="container" style="display:none;">
@@ -122,20 +114,8 @@ font-size:18px;
 
 <script>
 
-/* PRELOAD IMAGES FOR ZERO DELAY */
-const photoFiles = [
-"Pranav1.png","Pranav2.png","Pranav3.png","Pranav4.png",
-"Pranav5.png","Pranav6.png","Pranav7.png","Pranav8.png",
-"Pranav9.png","Pranav10.png","Pranav11.png"
-];
-
-photoFiles.forEach(src=>{
-let img=new Image();
-img.src=src;
-});
-
 /* Floating hearts */
-setInterval(()=>{
+let heartInterval=setInterval(()=>{
 let heart=document.createElement("div");
 heart.className="heart";
 heart.innerText="💖";
@@ -144,6 +124,13 @@ heart.style.fontSize=(Math.random()*20+15)+"px";
 document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),6000);
 },500);
+
+/* Preload images */
+const photos=["Pranav1.png","Pranav2.png","Pranav3.png","Pranav4.png",
+"Pranav5.png","Pranav6.png","Pranav7.png","Pranav8.png",
+"Pranav9.png","Pranav10.png","Pranav11.png"];
+
+photos.forEach(src=>{let i=new Image(); i.src=src;});
 
 const questions=[
 {q:"Who is the reason behind all this effort and overthinking?",
@@ -169,21 +156,27 @@ options:["A sweet shop","A Kolkata dessert","A sugary ball","The reason Rasgulla
 ];
 
 let current=0;
-let noCount=0;
 
-function startExperience(){
-document.getElementById("intro").style.display="none";
-document.getElementById("game").style.display="block";
-
+function startMusic(choice){
 let music=document.getElementById("music");
 music.volume=1.0;
 music.play();
+if(!choice){
+document.getElementById("musicMsg").innerText="I insist… you HAVE to hear it 😌";
+setTimeout(()=>beginGame(),1200);
+}else{
+beginGame();
+}
+}
 
+function beginGame(){
+document.getElementById("intro").style.display="none";
+document.getElementById("game").style.display="block";
 loadQuestion();
 }
 
 function loadQuestion(){
-document.getElementById("photo").src=photoFiles[current];
+document.getElementById("photo").src=photos[current];
 document.getElementById("question").innerText=questions[current].q;
 document.getElementById("message").innerText="";
 let optionsDiv=document.getElementById("options");
@@ -200,11 +193,8 @@ optionsDiv.appendChild(btn);
 function checkAnswer(index){
 if(index===questions[current].correct){
 current++;
-if(current===10){
-dramaticPrompt();
-}else{
-loadQuestion();
-}
+if(current===10){dramaticPrompt();}
+else{loadQuestion();}
 }else{
 document.getElementById("message").innerText="Wrong answer 😌 Try again.";
 }
@@ -212,64 +202,84 @@ document.getElementById("message").innerText="Wrong answer 😌 Try again.";
 
 function dramaticPrompt(){
 document.getElementById("game").innerHTML=`
-<h2>Ufff… you're on fire 🔥</h2>
+<h3>Ufff… you're on fire 🔥</h3>
 <h3>If you already know so much about me…</h3>
 <h3>There’s just one last thing I want to ask you…</h3>
 <h1 id="countdown"></h1>
 `;
-
 let count=3;
 let cd=document.getElementById("countdown");
-
 let interval=setInterval(()=>{
 cd.innerText=count;
 count--;
 if(count<0){
 clearInterval(interval);
-showFinalQuestion();
+stageOne();
 }
 },1000);
 }
 
-function showFinalQuestion(){
+/* STAGE 1 */
+function stageOne(){
 document.getElementById("game").innerHTML=`
 <img src="Pranav11.png">
-<h2>Will you be my Valentine plsssss??? 💘</h2>
-<div id="options"></div>
+<h2>Will you be my Valentine? 💘</h2>
+<div id="options">
+<button class="option" onclick="stageTwo()">NO 🙄</button>
+<button class="option" onclick="stageTwo()">NO 🙄</button>
+</div>
 <div id="message"></div>
 `;
-
-let optionsDiv=document.getElementById("options");
-
-["YES 💖","NO 🙄"].forEach((opt,index)=>{
-let btn=document.createElement("button");
-btn.innerText=opt;
-btn.className="option";
-btn.onclick=()=>handleFinal(index);
-optionsDiv.appendChild(btn);
-});
 }
 
-function handleFinal(index){
-let msg=document.getElementById("message");
+function stageTwo(){
+document.getElementById("message").innerText="Sorry 😌 Try again";
+setTimeout(()=>{
+document.getElementById("options").innerHTML=`
+<button class="option" onclick="yesDodge()">YES 💖</button>
+<button class="option" onclick="noAgain()">NO 🙄</button>
+`;
+},800);
+}
 
-if(index===0){
-finalScreen();
+function noAgain(){
+document.getElementById("message").innerText="Think again 🥺";
+}
+
+let dodgeCount=0;
+function yesDodge(){
+dodgeCount++;
+if(dodgeCount<3){
+let btn=document.querySelector(".option");
+btn.style.position="relative";
+btn.style.left=(Math.random()*100-50)+"px";
 }else{
-noCount++;
-if(noCount==1) msg.innerText="Think Again 🥺";
-else if(noCount==2) msg.innerText="Manu will cry 😭";
-else if(noCount==3) msg.innerText="Last chance 😤";
-else finalScreen();
+document.getElementById("options").innerHTML=`
+<button class="option" onclick="finalScreen()">YESS!! 💍💖</button>
+`;
 }
 }
 
 function finalScreen(){
 document.getElementById("game").innerHTML=`
-<h1>YAYYYYYY 💍💖</h1>
-<h2>I love you so much Goaduu 😘❤️✨</h2>
+<h1>💍💖</h1>
+<h2>YAYYYYYY 💍💖</h2>
+<h3>I love you so much Goaduu 😘❤️✨</h3>
 <img src="Pranav11.png">
 `;
+setTimeout(()=>{
+document.body.style.filter="blur(8px)";
+clearInterval(heartInterval);
+heartInterval=setInterval(()=>{
+let heart=document.createElement("div");
+heart.className="heart";
+heart.innerText="💖";
+heart.style.left=Math.random()*100+"vw";
+heart.style.fontSize="40px";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),6000);
+},200);
+},15000);
 }
 </script>
 
